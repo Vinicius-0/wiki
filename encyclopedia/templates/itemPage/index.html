@@ -1,0 +1,10 @@
+{% extends "itemPage/layout.html" %}
+
+{% block title %}
+    Encyclopedia - {{wikiPage}}
+{% endblock %} 
+
+{% block body %}
+    {{content|safe}}
+
+{% endblock %}
