@@ -1,4 +1,4 @@
-{% extends "encyclopedia/layout.html" %}
+{% extends "errorPage/layout.html" %}
 
 {% block title %}
     Encyclopedia {{wikiPage}} not found
@@ -8,5 +8,7 @@
     <h1>{{wikiPage}}</h1>
 
     <h2>This page does not exist.</h2>
+
+    <a href="{% url 'index' %}">Home</a>
 
 {% endblock %}
