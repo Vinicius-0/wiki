@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from . import util
 
+from django import forms
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
@@ -51,3 +52,26 @@ def random(request):
     entries = util.list_entries()
     randomEntry = secrets.choice(entries)
     return HttpResponseRedirect(reverse("item", kwargs={"wikiPage": randomEntry}))
+
+
+def new(request):
+    if request.method == 'POST':
+        form = EntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            if util.get_entry(title) == None:
+                util.save_entry(title, content)
+                return HttpResponseRedirect(reverse("item", kwargs={"wikiPage": title}))
+            else:
+                return render(request, 'newPage/index.html', {'form': form, 'error': True, 'title': title})
+    else:
+        form = EntryForm()
+    return render(request, 'newPage/index.html', {'form': form})
+
+
+class EntryForm(forms.Form):
+    title = forms.CharField(
+        label='', max_length=100, widget=forms.Textarea(attrs={'placeholder': 'Wiki title', 'style': 'height: 30px;'}))
+    content = forms.CharField(
+        label='', widget=forms.Textarea(attrs={'placeholder': 'Wiki Content', 'style': 'height: 90px;'}))

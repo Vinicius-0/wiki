@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia - New Page
+{% endblock %}
+
+{% block body %}
+    <h1>Create a new page</h1>
+    {% if error%}
+    <div class="alert alert-danger" role="alert">
+        Wait! This Wiki Page already exists. Click <a href="{% url 'item' wikiPage=title%}">here</a> to see!
+      </div>
+    {% endif %}
+        <form method="post" >
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-primary" type="submit" value="Save">
+        </form>
+
+{% endblock %}
