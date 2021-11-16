@@ -5,6 +5,9 @@
 {% endblock %} 
 
 {% block body %}
+    <form action="{% url 'edit' wikiPage=wikiPage%}">
+        <input class="btn btn-primary" type="submit" value="Edit" />
+    </form>
     {{content|safe}}
 
 {% endblock %}

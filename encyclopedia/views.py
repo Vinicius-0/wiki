@@ -60,14 +60,14 @@ def new(request):
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            if util.get_entry(title) == None:
+            if util.get_entry(title) == None or form.cleaned_data['edit'] == True:
                 util.save_entry(title, content)
                 return HttpResponseRedirect(reverse("item", kwargs={"wikiPage": title}))
             else:
                 return render(request, 'newPage/index.html', {'form': form, 'error': True, 'title': title})
     else:
         form = EntryForm()
-    return render(request, 'newPage/index.html', {'form': form})
+    return render(request, 'newPage/index.html', {'form': form, 'error': False})
 
 
 class EntryForm(forms.Form):
@@ -75,3 +75,15 @@ class EntryForm(forms.Form):
         label='', max_length=100, widget=forms.Textarea(attrs={'placeholder': 'Wiki title', 'style': 'height: 30px;'}))
     content = forms.CharField(
         label='', widget=forms.Textarea(attrs={'placeholder': 'Wiki Content', 'style': 'height: 90px;'}))
+    edit = forms.BooleanField(
+        initial=False, required=False, widget=forms.HiddenInput())
+
+
+def edit(request, wikiPage):
+    page = util.get_entry(wikiPage)
+    form = EntryForm()
+    form.fields['title'].initial = wikiPage
+    form.fields['content'].initial = page
+    form.fields['edit'].initial = True
+    form.fields['title'].widget = forms.HiddenInput()
+    return render(request, 'newPage/index.html', {'form': form, 'title': form.fields['title'].initial, 'edit': form.fields['edit'].initial})
